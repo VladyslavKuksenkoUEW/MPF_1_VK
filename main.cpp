@@ -1,48 +1,35 @@
-#include <iostream>
-#include <string>
-
-using namespace std;
-
-// Function to calculate Function Point
-void calfp(int frates[][3], int fac_rate)
-{
-
-    // Function Units
-    string funUnits[5] = {
+def calfp(frates, fac_rate):
+    # Jednostki funkcjonalne (tekst zachowany dla zachowania struktury z C++)
+    fun_units = [
         "External Inputs",
         "External Outputs",
         "External Inquiries",
         "Internal Logical Files",
         "External Interface Files"
-    };
+    ]
 
-    // Weight Rates
-    string wtRates[3] = { "Low", "Average", "High" };
+    # Poziomy wag
+    wt_rates = ["Low", "Average", "High"]
 
-    // Weight Factors
-    int wtFactors[5][3] = {
-        { 3, 4, 6 },
-        { 4, 5, 7 },
-        { 3, 4, 6 },
-        { 7, 10, 15 },
-        { 5, 7, 10 },
-    };
+    # Współczynniki wagowe (Weight Factors)
+    wt_factors = [
+        [3, 4, 6],
+        [4, 5, 7],
+        [3, 4, 6],
+        [7, 10, 15],
+        [5, 7, 10]
+    ]
 
-    int UFP = 0;
+    ufp = 0
 
-    // Calculating UFP (Unadjusted Function Point)
-    for (int i = 0; i < 5; i++) {
+    # Obliczanie UFP (Unadjusted Function Point)
+    for i in range(5):
+        for j in range(3):
+            freq = frates[i][j]
+            ufp += freq * wt_factors[i][j]
 
-        for (int j = 0; j < 3; j++) {
-
-            int freq = frates[i][j];
-
-            UFP += freq * wtFactors[i][j];
-        }
-    }
-
-    // 14 factors
-    string aspects[14] = {
+    # 14 czynników ogólnej charakterystyki systemu
+    aspects = [
         "reliable backup and recovery required ?",
         "data communication required ?",
         "are there distributed processing functions ?",
@@ -57,48 +44,37 @@ void calfp(int frates[][3], int fac_rate)
         "are the conversion and installation included in the design ?",
         "is the system designed for multiple installations in different organizations ?",
         "is the application designed to facilitate change and ease of use by the user ?"
-    };
+    ]
 
-    int sumF = 0;
+    # W oryginalnym kodzie C++ pętla po prostu 14-krotnie dodaje fac_rate do sumy
+    sum_f = 0
+    for _ in range(14):
+        sum_f += fac_rate
 
-    // Taking Input of factors rate
-    for (int i = 0; i < 14; i++) {
+    # Obliczanie CAF (Complexity Adjustment Factor)
+    caf = 0.65 + 0.01 * sum_f
 
-        int rate = fac_rate;
+    # Obliczanie punktów funkcyjnych (FP)
+    fp = ufp * caf
 
-        sumF += rate;
-    }
+    # Wyświetlanie wyników
+    print("Function Point Analysis :-")
+    print(f"Unadjusted Function Points (UFP) : {ufp}")
+    print(f"Complexity Adjustment Factor (CAF) : {caf:.2f}")
+    print(f"Function Points (FP) : {fp:.2f}")
 
-    // Calculate CFP
-    double CAF = 0.65 + 0.01 * sumF;
 
-    // Calculate Function Point (FP)
-    double FP = UFP * CAF;
+# Funkcja główna (odpowiednik int main())
+if __name__ == "__main__":
+    # Tablica 2D reprezentująca częstotliwości występowania
+    frates = [
+        [0, 1, 0],
+        [0, 1, 0],
+        [0, 3, 0],
+        [0, 1, 0],
+        [0, 3, 0]
+    ]
 
-    // Output Values
-    cout << "Function Point Analysis :-" << endl;
+    fac_rate = 2
 
-    cout << "Unadjusted Function Points (UFP) : " << UFP << endl;
-
-    cout << "Complexity Adjustment Factor (CAF) : " << CAF << endl;
-
-    cout << "Function Points (FP) : " << FP << endl;
-}
-
-// driver function
-int main()
-{
-    int frates[5][3] = {
-        { 0, 50, 0 },
-        { 0, 40, 0 },
-        { 0, 35, 0 },
-        { 0, 6, 0 },
-        { 0, 4, 0 }
-    };
-
-    int fac_rate = 3;
-
-    calfp(frates, fac_rate);
-
-    return 0;
-}
+    calfp(frates, fac_rate)
